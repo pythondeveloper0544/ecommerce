@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+{% load static %}
+<head>
+    <meta charset="utf-8">
+    <title>MultiShop</title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+
+    {#    <!-- Favicon -->#}
+    {#    <link href="{% static "img/favicon.ico"%}" rel="icon">#}
+
+    <!-- Google Web Fonts -->
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
+
+    <!-- Libraries Stylesheet -->
+    <link href="{% static 'lib/animate/animate.min.css' %}" rel="stylesheet">
+    <link href="{% static 'lib/owlcarousel/assets/owl.carousel.min.css' %}" rel="stylesheet">
+
+    <!-- Customized Bootstrap Stylesheet -->
+    <link href="{% static 'css/style.css' %}" rel="stylesheet">
+</head>
+
+<body>
+{% include 'inc/_topbar.html' %}
+
+{% include 'inc/_nav.html' %}
+
+{% block content %}
+
+{% endblock %}
+
+{% include 'inc/_footer.html' %}
+
+
+<!-- Back to Top -->
+<a href="#" class="btn btn-primary back-to-top"><i class="fa fa-angle-double-up"></i></a>
+
+
+<!-- JavaScript Libraries -->
+<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js"></script>
+<script src="{% static "lib/easing/easing.min.js" %}"></script>
+<script src="{% static "lib/owlcarousel/owl.carousel.min.js" %}"></script>
+
+<!-- Contact Javascript File -->
+<script src="{% static 'mail/jqBootstrapValidation.min.js' %}"></script>
+<script src="{% static 'mail/contact.js' %}"></script>
+
+<!-- Template Javascript -->
+<script src="{% static "js/main.js" %}"></script>
+<script>
+    let user = '{{ request.user }}';
+    let updateBtns = document.getElementsByClassName('update-cart');
+
+    for (let i = 0; i < updateBtns.length; i++) {
+        updateBtns[i].addEventListener('click', function () {
+            productId = this.dataset.product
+            action = this.dataset.action
+            if (user === 'AnonymousUser') {
+                alert("you must log in")
+            } else {
+                updateCart(productId, action)
+                location.reload()
+            }
+        })
+    }
+
+    function updateCart(productId, action) {
+        url = "{% url 'update' %}"
+        fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({'productId': productId, 'action': action})
+            }
+        )
+    }
+
+    let liked = document.getElementsByClassName('liked')
+    for (let i = 0; i < liked.length; i++) {
+        liked[i].addEventListener('click', function () {
+            productId = this.dataset.product
+            if (user === 'AnonymousUser') {
+                alert("you must log in")
+            } else {
+                likedProduct(productId);
+                location.reload();
+            }
+        })
+    }
+
+    function likedProduct(productId) {
+        fetch('/liked/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({'productId': productId})
+        })
+    }
+
+</script>
+</body>
+
+</html>

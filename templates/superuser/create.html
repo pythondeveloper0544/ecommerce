@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="container">
+        <form action="{% url 'create-product' %}" method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" class="btn btn-info">Submit</button>
+        </form>
+    </div>
+{% endblock %}
